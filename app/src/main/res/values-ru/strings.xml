@@ -13,7 +13,7 @@
     <string name="ActivityMain_GPX">GPX</string>
 
     <!--  Strings from MainActivity.java  -->
-    <string name="MainActivity_NoLatLong">Нет значения широты и долготы. Длительное нажатие на карте, где вы хотите быть расположены.</string>
+    <string name="MainActivity_NoLatLong">Нет значений lat или lng. Длинное нажатие на карте в том месте, где вы хотите находиться, или выберите маршрут GPX.</string>
     <string name="MainActivity_MockApplied">Изменённое местоположение применено.</string>
     <string name="MainActivity_MockNotApplied">«Изменённое местоположение не применяется. Вы должны включить изменение местоположения в настройках разработчика»</string>
     <string name="MainActivity_MockLocRunning">Служба размещения местоположения работает.</string>
@@ -32,5 +32,6 @@
     <!--  Strings from ApplyMockBroadcastReceiver.java  -->
     <string name="ApplyMockBroadRec_MockNotApplied">«Изменение локации не указано. Вы должны включить изменения расположения в настройках разработчика. Служба остановлена».</string>
     <string name="ApplyMockBroadRec_Closed">Fake Traveler был закрыт. Изменение локации остановлено.</string>
+    <string name="ActivityMain_GPXRemove">Остановить чтение файла</string>
 
 </resources>

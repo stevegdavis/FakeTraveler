@@ -281,12 +281,18 @@ public class MainActivity extends AppCompatActivity {
      * This method is called when "Apply" button is pressed.
      */
     protected static void applyLocation() {
-        if (latIsEmpty() || lngIsEmpty()) {
+        if ((latIsEmpty() || lngIsEmpty()) && (list.size() == 0)) {
             toast(context.getResources().getString(R.string.MainActivity_NoLatLong));
             return;
         }
-        lat = Double.parseDouble(editTextLat.getText().toString());
-        lng = Double.parseDouble(editTextLng.getText().toString());
+        if(list.size() > 0) {
+            lat = Double.parseDouble(list.get(GPXCoordinatesIdx).Latitude);
+            lng = Double.parseDouble(list.get(GPXCoordinatesIdx).Longitude);
+        }
+        else {
+            lat = Double.parseDouble(editTextLat.getText().toString());
+            lng = Double.parseDouble(editTextLng.getText().toString());
+        }
 
         toast(context.getResources().getString(R.string.MainActivity_MockApplied));
 
@@ -469,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
      * Changes the GPX button to Stop, and its behavior.
      */
     void changeGPXButtonToStop() {
-        buttonGPX.setText(context.getResources().getString(R.string.ActivityMain_Stop));
+        buttonGPX.setText(context.getResources().getString(R.string.ActivityMain_GPXRemove));
         buttonGPX.setOnClickListener(new View.OnClickListener() {
 
             @Override

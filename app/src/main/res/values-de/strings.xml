@@ -14,7 +14,7 @@
     <string name="ActivityMain_GPX">GPX</string>
 
     <!--  Strings from MainActivity.java  -->
-    <string name="MainActivity_NoLatLong">Kein Längen- und Breitengrad. Halten Sie den gewünschten Standort auf der Karte gedrückt.</string>
+    <string name="MainActivity_NoLatLong">Kein Lat- oder Lng-Wert. Drücken Sie lange auf die Karte, wo Sie sich befinden möchten, oder wählen Sie GPX-Route.</string>
     <string name="MainActivity_MockApplied">Simulierter Standort gesetzt.</string>
     <string name="MainActivity_MockNotApplied">"Simulierter Standort kann nicht angewendet werden. Aktivieren Sie die Einstellung für simulierte Standorte in den Entwickleroptionen."</string>
     <string name="MainActivity_MockLocRunning">Standort Simulation läuft.</string>
@@ -33,5 +33,6 @@
     <!--  Strings from ApplyMockBroadcastReceiver.java  -->
     <string name="ApplyMockBroadRec_MockNotApplied">"Standort nicht simuliert. Sie müssen die Entwicklereinstellungen anpassen."</string>
     <string name="ApplyMockBroadRec_Closed">Fake Traveler wurde geschlossen. Standort Simulation gestoppt.</string>
+    <string name="ActivityMain_GPXRemove">Datei lesen beenden</string>
 
 </resources>

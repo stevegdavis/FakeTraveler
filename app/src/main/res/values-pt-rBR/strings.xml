@@ -11,7 +11,7 @@
     <string name="ActivityMain_GPX">GPX</string>
 
     <!--  Strings from MainActivity.java  -->
-    <string name="MainActivity_NoLatLong">Não existem valores para lat or long. Mantenha pressionado no mapa onde deseja se pocisionar.</string>
+    <string name="MainActivity_NoLatLong">Sem valor de lat ou lng. Prensa longa no mapa onde você quer estar localizado ou escolha a rota GPX.</string>
     <string name="MainActivity_MockApplied">Posições fictícias aplicadas.</string>
     <string name="MainActivity_MockNotApplied">"Posições fictícias não aplicadas. Ativar suporte para app de local fictício nas configurações do sistema, modo programador"</string>
     <string name="MainActivity_MockLocRunning">Serviço de posiciones fictícias rodando.</string>
@@ -31,5 +31,6 @@
     <!--  Strings from ApplyMockBroadcastReceiver.java  -->
     <string name="ApplyMockBroadRec_MockNotApplied">"Posição fictícia não aplicada. Ative o Fake Traveler como uma aplicação de local fictício nas configurações do sistema, modo programador. Serviço não ativado."</string>
     <string name="ApplyMockBroadRec_Closed">Fake Traveler encerrado. Configurações em modo padrão.</string>
+    <string name="ActivityMain_GPXRemove">Parar arquivo de leitura</string>
 
 </resources>
