@@ -11,7 +11,7 @@ Sometimes you need to fake the location of your device (for privacy or to test a
 Long press in the map where you want to be located or type the latitude and longitude, and tap the Apply button. Alternately you can press the GPX button and choose a GPX route to use and then press the Apply button, pressing the GPX button again will stop reading the route and revert to the the map long press operation. Tapping the "..." button you will be shown two settings to mock the location over a period of time. 
 
 <div style="display:flex;">
-<img alt="App image" src="screenshots/Screenshot_20211207-102535_Fake Traveler.jpg" width="30%">
+<img alt="App image" src="screenshots/Screenshot_20211207-144405_Fake Traveler.jpg" width="30%">
 <img alt="App image" src="screenshots/Screenshot_20211207-103808_Fake Traveler.jpg" width="30%">
 </div>
 
