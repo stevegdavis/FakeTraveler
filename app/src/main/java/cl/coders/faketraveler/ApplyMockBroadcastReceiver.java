@@ -27,9 +27,19 @@ public class ApplyMockBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        double lat = 0;
+        double lng = 0;
         try {
-            double lat = Double.parseDouble(sharedPref.getString("lat", "0"));
-            double lng = Double.parseDouble(sharedPref.getString("lng", "0"));
+            if(MainActivity.list != null && MainActivity.list.size() > 0){
+                lat = Double.parseDouble(MainActivity.list.get(MainActivity.GPXCoordinatesIdx).Latitude);
+                lng = Double.parseDouble(MainActivity.list.get(MainActivity.GPXCoordinatesIdx++).Longitude);
+                if(MainActivity.GPXCoordinatesIdx >= MainActivity.list.size())
+                    MainActivity.GPXCoordinatesIdx = 0;
+            }
+            else {
+                lat = Double.parseDouble(sharedPref.getString("lat", "0"));
+                lng = Double.parseDouble(sharedPref.getString("lng", "0"));
+            }
 
             MainActivity.exec(lat, lng);
 
