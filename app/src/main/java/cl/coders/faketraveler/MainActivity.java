@@ -7,10 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -18,7 +22,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
 import static cl.coders.faketraveler.MainActivity.SourceChange.CHANGE_FROM_EDITTEXT;
 import static cl.coders.faketraveler.MainActivity.SourceChange.CHANGE_FROM_MAP;
@@ -30,14 +39,17 @@ public class MainActivity extends AppCompatActivity {
     static final String sharedPrefKey = "cl.coders.mockposition.sharedpreferences";
     static final int KEEP_GOING = 0;
     static private int SCHEDULE_REQUEST_CODE = 1;
+    static private int GPX_FILE_REQUEST_CODE = 2;
     public static Intent serviceIntent;
     public static PendingIntent pendingIntent;
     public static AlarmManager alarmManager;
     static Button button0;
     static Button button1;
+    static Button buttonGPX;
     static WebView webView;
     static EditText editTextLat;
     static EditText editTextLng;
+    static TextView GPXFilename;
     static Context context;
     static SharedPreferences sharedPref;
     static SharedPreferences.Editor editor;
@@ -49,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     static int currentVersion;
     private static MockLocationProvider mockNetwork;
     private static MockLocationProvider mockGps;
+
+    public static ArrayList<GPSCoordinates> list = new ArrayList<>();
+    public static int GPXCoordinatesIdx = 0;
 
     WebAppInterface webAppInterface;
 
@@ -72,8 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         button0 = (Button) findViewById(R.id.button0);
         button1 = (Button) findViewById(R.id.button1);
+        buttonGPX = (Button) findViewById(R.id.buttonGPX);
         editTextLat = findViewById(R.id.editText0);
         editTextLng = findViewById(R.id.editText1);
+        GPXFilename = (TextView) findViewById(R.id.GPXFilename);
+
 
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +105,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 Intent myIntent = new Intent(getBaseContext(), MoreActivity.class);
                 startActivity(myIntent);
+            }
+        });
+        buttonGPX
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                FileChooser();
             }
         });
 
@@ -196,6 +221,25 @@ public class MainActivity extends AppCompatActivity {
             stopMockingLocation();
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // If the user doesn't pick a file just return
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GPX_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            String fileName = getFileName(data.getData());
+            GPXFilename.setText(fileName);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(data.getData());
+                //GPSCoordinatesGPXFileHandlerResponse handler = new GPSCoordinatesGPXFileHandlerResponse();
+                GPSCoordinatesGPXFileManager manager = new GPSCoordinatesGPXFileManager();
+                manager.parse(list, inputStream, context);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            changeGPXButtonToStop();
+            return;
+        }
+    }
 
     /**
      * Check and reinitialize shared preferences in case of problem.
@@ -241,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
             toast(context.getResources().getString(R.string.MainActivity_NoLatLong));
             return;
         }
-
         lat = Double.parseDouble(editTextLat.getText().toString());
         lng = Double.parseDouble(editTextLng.getText().toString());
 
@@ -281,6 +324,11 @@ public class MainActivity extends AppCompatActivity {
      */
     static void exec(double lat, double lng) {
         try {
+            // This check is not really needed - just to see if list is active
+            if(list != null && list.size() > 0) {
+                editTextLat.setText(Double.toString(lat));
+                editTextLng.setText(Double.toString(lng));
+            }
             //MockLocationProvider mockNetwork = new MockLocationProvider(LocationManager.NETWORK_PROVIDER, context);
             mockNetwork.pushLocation(lat, lng);
             //MockLocationProvider mockGps = new MockLocationProvider(LocationManager.GPS_PROVIDER, context);
@@ -404,6 +452,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Changes the button to GPX, and its behavior.
+     */
+    void changeGPXButtonToChoose() {
+        buttonGPX.setText(context.getResources().getString(R.string.ActivityMain_GPX));
+        buttonGPX.setOnClickListener( new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                FileChooser();
+            }
+
+        });
+    }
+    /**
+     * Changes the GPX button to Stop, and its behavior.
+     */
+    void changeGPXButtonToStop() {
+        buttonGPX.setText(context.getResources().getString(R.string.ActivityMain_Stop));
+        buttonGPX.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                list.clear();
+                GPXCoordinatesIdx = 0;
+                GPXFilename.setText("");
+                changeGPXButtonToChoose();
+            }
+        });
+    }
+
+    /**
      * Sets latitude and longitude
      *
      * @param mLat      latitude
@@ -444,5 +523,32 @@ public class MainActivity extends AppCompatActivity {
      */
     static String getLng() {
         return editTextLng.getText().toString();
+    }
+
+    public void FileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // Set mime type to GPX
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(intent, GPX_FILE_REQUEST_CODE);
+    }
+
+    private String getFileName(Uri uri) throws IllegalArgumentException {
+        // Obtain a cursor with information regarding this uri
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            throw new IllegalArgumentException("Can't obtain file name, cursor is empty");
+        }
+
+        cursor.moveToFirst();
+
+        String fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+
+        cursor.close();
+
+        return fileName;
     }
 }
