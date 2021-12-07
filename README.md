@@ -12,7 +12,7 @@ Long press in the map where you want to be located or type the latitude and long
 
 <div style="display:flex;">
 <img alt="App image" src="screenshots/Screenshot_20211207-102535_Fake Traveler.jpg" width="30%">
-<img alt="App image" src="screenshots/Screenshot_Fake_Traveler_20180722-192305.png" width="30%">
+<img alt="App image" src="screenshots/Screenshot_20211207-103808_Fake Traveler.jpg" width="30%">
 </div>
 
 
