@@ -211,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         toast(context.getResources().getString(R.string.ApplyMockBroadRec_Closed));
         stopMockingLocation();
+        if(list != null)
+            list.clear();
     }
 
     @Override
